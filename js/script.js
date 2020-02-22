@@ -1,12 +1,11 @@
 var canvas;
 var ctx;
 var img = new Image;
-var copy;
 // img.crossOrigin = "Anonymous";
 
 window.onload = () => {
 
-    img.src = 'img/stef2.jpg';
+    img.src = 'img/xcvbnm.jpg';
 
     canvas = document.getElementById('canvas');
     ctx = canvas.getContext('2d');
