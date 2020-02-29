@@ -18,8 +18,10 @@
   },
   "homepage": "https://github.com/GrilloLuca/stef_canvas#readme",
   "dependencies": {
+    "baboon-image": "^2.1.0",
     "img": "^3.0.3",
     "lodash": "^4.17.15",
-    "parcel-bundler": "^1.12.4"
+    "parcel-bundler": "^1.12.4",
+    "regl": "^1.3.13"
   }
 }
