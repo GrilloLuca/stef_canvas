@@ -32,23 +32,10 @@ var executeGlitch = (e) => {
     var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
     // invertColors(imageData.data)
-    glitch5(imageData, copy, x, y)
+    glitch7(imageData, copy, x, y)
 
     ctx.putImageData(imageData, 0, 0)
 }
-
-var setPixel = (imageData, x, y, p) => {
-    imageData.data[((y * (imageData.width * 4)) + (x * 4))] = p.r
-    imageData.data[((y * (imageData.width * 4)) + (x * 4)) + 1] = p.g
-    imageData.data[((y * (imageData.width * 4)) + (x * 4)) + 2] = p.b
-} 
-var getPixel = (imageData, x, y) => {
-    return {
-        r: imageData.data[((y * (imageData.width * 4)) + (x * 4))],
-        g: imageData.data[((y * (imageData.width * 4)) + (x * 4)) + 1],
-        b: imageData.data[((y * (imageData.width * 4)) + (x * 4)) + 2]
-    }
-} 
 
 var init = () => {
 

@@ -17,7 +17,7 @@ export var glitch5 = (imageData, copy, x, y) => {
     });
 }
 
-export var glitch4 = (imageData) => {
+export var glitch4 = (imageData, copy, x, y) => {
     
     let perc = parseInt(x/imageData.width*20)+1
 
@@ -26,7 +26,7 @@ export var glitch4 = (imageData) => {
     });
 }
 
-export var glitch3 = (imageData) => {
+export var glitch3 = (imageData, copy, x, y) => {
     var r = 4 * parseInt(Math.random()*2)+1
     let perc = parseInt(x/imageData.width*10)+1
 
@@ -35,7 +35,7 @@ export var glitch3 = (imageData) => {
     });
 }
 
-export var glitch2 = (data) => {
+export var glitch2 = (imageData, copy, x, y) => {
     for(w = 0; w< data.width; w++) {
         for(h = 0; h< data.height; h++) {
             let r = 4 * parseInt(Math.random()*10)+1
@@ -52,3 +52,17 @@ export var invertColors = (data) => {
       data[i+2] = data[i+2] ^ 255; // Invert Blue
     }
 }
+
+
+var setPixel = (imageData, x, y, p) => {
+    imageData.data[((y * (imageData.width * 4)) + (x * 4))] = p.r
+    imageData.data[((y * (imageData.width * 4)) + (x * 4)) + 1] = p.g
+    imageData.data[((y * (imageData.width * 4)) + (x * 4)) + 2] = p.b
+} 
+var getPixel = (imageData, x, y) => {
+    return {
+        r: imageData.data[((y * (imageData.width * 4)) + (x * 4))],
+        g: imageData.data[((y * (imageData.width * 4)) + (x * 4)) + 1],
+        b: imageData.data[((y * (imageData.width * 4)) + (x * 4)) + 2]
+    }
+} 
