@@ -1,5 +1,8 @@
 import imageAsset from "../img/test.png";
-import { redShift, invert } from "./effect-glsl";
+import { redShift, invert, modShift } from "./effect-glsl";
+import createRegl from "regl";
+
+const regl = createRegl();
 
 const mouse = {
   x: 0,
@@ -34,13 +37,16 @@ function initRegl() {
 
       ${redShift}
       ${invert}
+      ${modShift}
 
       varying vec2 uv;
       void main () {
         vec2 st = gl_FragCoord.xy / iResolution;
 
-        vec2 offset = uv + (iMouse * vec2(1.0, -1.0)) / 10.0;
-        vec4 color = redShift(texture, uv, offset);
+        //vec2 offset = uv + (iMouse * vec2(1.0, -1.0)) / 10.0;
+        //vec4 color = redShift(texture, uv, offset);
+
+        vec4 color = modShift(texture, uv, st);
 
         gl_FragColor = invert(color);
         
