@@ -1,51 +1,47 @@
-import imageAsset from "../img/stef2.jpg";
-const regl = require("regl")();
+import imageAsset from "../img/test.png";
 
-var x = 0, y = 0
+const mouse = {
+  x: 0,
+  y: 0
+};
+
+window.addEventListener("mousemove", event => {
+  mouse.x = event.clientX;
+  mouse.y = event.clientY;
+});
 
 var img = new Image();
+var loadImageBuffer = () => {
+  initRegl();
+};
 
 var init = () => {
-
   img.src = imageAsset;
-
-  img.onload = initRegl;
+  img.onload = loadImageBuffer;
   img.onerror = console.log;
-
-  setInterval(initRegl, 50)
-
 };
 
 init();
 
 function initRegl() {
-
-  regl({
+  const toy = regl({
     frag: `
       precision mediump float;
       uniform sampler2D texture;
       uniform vec2 iResolution;
-      uniform float x;
-      uniform float y;
+      uniform vec2 iMouse;
       
       varying vec2 uv;
       void main () {
-        vec4 color = texture2D(texture, uv);        
-
-        // color.r = 1.0;
-
-        // imageData.data[i] = i%4 == 3 ? b : copy[i^(4*x)]
-
         vec2 st = gl_FragCoord.xy/iResolution;
 
-        if( mod(st.y, ${Math.random()}) >= ${Math.random()} ) {
-            vec2 uvGlitch = uv - vec2(${Math.random()}, 0.01);
-            color = texture2D(texture, uvGlitch);
-            gl_FragColor = color;
-        } else {
-            gl_FragColor = color;
-        }
-
+        vec4 redShift = texture2D(texture, uv + iMouse / 10.0);
+        vec4 color = texture2D(texture, uv);
+        
+        color.r = redShift.r;
+        
+        gl_FragColor = color;
+        
       }`,
 
     vert: `
@@ -63,12 +59,22 @@ function initRegl() {
 
     uniforms: {
       texture: regl.texture(img),
-      x, y,
-      iResolution: ctx => {
-        return [ctx.viewportWidth, ctx.viewportHeight];
-      }
+      iResolution: ({ viewportWidth, viewportHeight }) => [
+        viewportWidth,
+        viewportHeight
+      ],
+      iMouse: ({ viewportWidth, viewportHeight }) => {
+        const m = [mouse.x / viewportWidth, mouse.y / viewportHeight];
+        return m;
+      },
+
+      iGlobalTime: regl.prop("iGlobalTime")
     },
 
     count: 3
-  })();
+  });
+
+  regl.frame(() => {
+    toy();
+  });
 }
