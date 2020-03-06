@@ -1,4 +1,4 @@
-import imageAsset from "../img/test.png";
+import imageAsset from "../img/stef2.jpg";
 import { redShift, invert, modShift } from "./effect-glsl";
 import createRegl from "regl";
 
@@ -29,60 +29,66 @@ init();
 
 function initRegl() {
   const toy = regl({
-    frag: `
-      precision mediump float;
-      uniform sampler2D texture;
-      uniform vec2 iResolution;
-      uniform vec2 iMouse;
+      frag: `
+        precision mediump float;
+        uniform sampler2D texture;
+        uniform vec2 iResolution;
+        uniform vec2 iMouse;
+        uniform vec2 time;
 
-      ${redShift}
-      ${invert}
-      ${modShift}
+        ${redShift}
+        ${invert}
+        ${modShift}
 
-      varying vec2 uv;
-      void main () {
-        vec2 st = gl_FragCoord.xy / iResolution;
+        varying vec2 uv;
+        void main () {
+          vec2 st = gl_FragCoord.xy / iResolution;
 
-        //vec2 offset = uv + (iMouse * vec2(1.0, -1.0)) / 10.0;
-        //vec4 color = redShift(texture, uv, offset);
+          //vec2 offset = uv + (iMouse * vec2(1.0, -1.0)) / 10.0;
+          //vec4 color = redShift(texture, uv, offset);
 
-        vec4 color = modShift(texture, uv, st);
+          vec4 color = modShift(texture, uv, st, time);
 
-        gl_FragColor = invert(color);
-        
-      }`,
+          gl_FragColor = color;
+          
+        }`,
 
-    vert: `
-      precision mediump float;
-      attribute vec2 position;
-      varying vec2 uv;
-      void main () {
-        uv = position;
-        gl_Position = vec4(1.0 - 2.0 * position, 0, 1);
-      }`,
+      vert: `
+        precision mediump float;
+        attribute vec2 position;
+        varying vec2 uv;
+        void main () {
+          uv = position;
+          gl_Position = vec4(1.0 - 2.0 * position, 0, 1);
+        }`,
 
-    attributes: {
-      position: [-2, 0, 0, -2, 2, 2]
-    },
-
-    uniforms: {
-      texture: regl.texture(img),
-      iResolution: ({ viewportWidth, viewportHeight }) => [
-        viewportWidth,
-        viewportHeight
-      ],
-      iMouse: ({ viewportWidth, viewportHeight }) => {
-        const m = [mouse.x / viewportWidth, mouse.y / viewportHeight];
-        return m;
+      attributes: {
+        position: [-2, 0, 0, -2, 2, 2]
       },
 
-      iGlobalTime: regl.prop("iGlobalTime")
-    },
+      uniforms: {
+        texture: regl.texture(img),
+        iResolution: ({ viewportWidth, viewportHeight }) => [
+          viewportWidth,
+          viewportHeight
+        ],
+        iMouse: ({ viewportWidth, viewportHeight }) => {
+          const m = [mouse.x / viewportWidth, mouse.y / viewportHeight];
+          return m;
+        },
+        time: regl.prop('time'),
+        iGlobalTime: regl.prop("iGlobalTime")
+      },
 
-    count: 3
+      count: 3
   });
 
-  regl.frame(() => {
-    toy();
+  regl.frame(({time}) => {
+    toy({
+      time: [
+        Math.sin(time*50),
+        Math.random()
+      ]
+    })
   });
 }
