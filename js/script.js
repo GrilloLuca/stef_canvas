@@ -86,7 +86,7 @@ function initRegl() {
   regl.frame(({time}) => {
     toy({
       time: [
-        Math.sin(time*50),
+        Math.sin(time),
         Math.random()
       ]
     })
