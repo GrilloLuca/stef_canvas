@@ -4,15 +4,7 @@ import createRegl from "regl";
 
 const regl = createRegl();
 
-const mouse = {
-  x: 0,
-  y: 0
-};
-
-window.addEventListener("mousemove", event => {
-  mouse.x = event.clientX;
-  mouse.y = event.clientY;
-});
+loadCamera()
 
 var img = new Image();
 var loadImageBuffer = () => {
@@ -86,9 +78,33 @@ function initRegl() {
   regl.frame(({time}) => {
     toy({
       time: [
-        Math.sin(time),
+        Math.sin(time/10),
         Math.random()
       ]
     })
   });
+}
+
+function loadCamera() {
+
+  navigator.getUserMedia = navigator.getUserMedia ||
+                          navigator.webkitGetUserMedia ||
+                          navigator.mozGetUserMedia;
+
+  if (navigator.getUserMedia) {
+    navigator.getUserMedia({ audio: true, video: { width: 1280, height: 720 } },
+        function(stream) {
+          var video = document.querySelector('video');
+          video.srcObject = stream;
+          video.onloadedmetadata = function(e) {
+            video.play();
+          };
+        },
+        function(err) {
+          console.log("The following error occurred: " + err.name);
+        }
+    );
+  } else {
+    console.log("getUserMedia not supported");
+  }
 }
