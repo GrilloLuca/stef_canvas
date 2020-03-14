@@ -14,13 +14,13 @@ vec4 invert(vec4 color) {
 `;
 
 export const modShift = `
-vec4 modShift(sampler2D texture, vec2 uv, vec2 st) {
-  if( mod(st.y, ${Math.random()}) >= ${Math.random()} ) {
-    vec2 uvGlitch = uv - vec2(${Math.random()}, 0.01);
-    vec4 color = texture2D(texture, uvGlitch);
-    return color;
-  } else {
-    return texture2D(texture, uv); ;
+  vec4 modShift(sampler2D texture, vec2 uv, vec2 st, vec2 time) {
+    if( mod(st.y, time[0]) >= time[1] ) {
+      vec2 uvGlitch = uv - vec2(time[0], 0.01);
+      vec4 color = texture2D(texture, uvGlitch);
+      return color;
+    } else {
+      return texture2D(texture, uv); ;
+    }
   }
-}
 `;

@@ -28,6 +28,7 @@ function initRegl() {
       uniform sampler2D texture;
       uniform vec2 iResolution;
       uniform vec2 iMouse;
+      uniform vec2 time;
 
       ${redShift}
       ${invert}
@@ -38,11 +39,12 @@ function initRegl() {
         vec2 st = gl_FragCoord.xy / iResolution;
 
         vec2 offset = uv + (iMouse * vec2(1.0, -1.0)) / 10.0;
-        vec4 color = redShift(texture, uv, offset);
+        // vec4 color = redShift(texture, uv, offset);
 
-        //vec4 color = modShift(texture, uv, st);
+        vec4 color = modShift(texture, uv, st, time);
 
-        gl_FragColor = invert(color);
+        gl_FragColor = color;
+        // gl_FragColor = invert(color);
         
         //gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
       }`,
@@ -61,6 +63,7 @@ function initRegl() {
     },
 
     uniforms: {
+      time: regl.prop('time'),
       texture: regl.prop('background'),
       iResolution: ({ viewportWidth, viewportHeight }) => [
         viewportWidth,
@@ -77,13 +80,17 @@ function initRegl() {
   })
 
   createLoadCamera(regl)
-  frame(() => {
+  frame(({time}) => {
     const background = camera.isWebcamLoaded
       ? camera.webcam.subimage(camera.video)
       : regl.texture(img)
 
     toy({
       background,
+      time: [
+        Math.sin(time/10),
+        Math.random()
+      ]
     })
   })
 }
