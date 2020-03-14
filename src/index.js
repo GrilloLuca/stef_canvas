@@ -1,18 +1,12 @@
 import imageAsset from './assets/test.png'
 import { redShift, invert, modShift } from './effect-glsl'
 import createRegl from 'regl'
+import { createFrameCatch } from './lib/frame-catch'
+import { camera, createLoadCamera } from './lib/camera'
+import { mouse } from './lib/mouse'
 
 const regl = createRegl()
-
-const mouse = {
-  x: 0,
-  y: 0,
-}
-
-window.addEventListener('mousemove', event => {
-  mouse.x = event.clientX
-  mouse.y = event.clientY
-})
+const frame = createFrameCatch(regl)
 
 const img = new Image()
 const loadImageBuffer = () => {
@@ -43,13 +37,14 @@ function initRegl() {
       void main () {
         vec2 st = gl_FragCoord.xy / iResolution;
 
-        //vec2 offset = uv + (iMouse * vec2(1.0, -1.0)) / 10.0;
-        //vec4 color = redShift(texture, uv, offset);
+        vec2 offset = uv + (iMouse * vec2(1.0, -1.0)) / 10.0;
+        vec4 color = redShift(texture, uv, offset);
 
-        vec4 color = modShift(texture, uv, st);
+        //vec4 color = modShift(texture, uv, st);
 
         gl_FragColor = invert(color);
         
+        //gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
       }`,
 
     vert: `
@@ -66,23 +61,29 @@ function initRegl() {
     },
 
     uniforms: {
-      texture: regl.texture(img),
+      texture: regl.prop('background'),
       iResolution: ({ viewportWidth, viewportHeight }) => [
         viewportWidth,
         viewportHeight,
       ],
-      iMouse: ({ viewportWidth, viewportHeight }) => {
-        const m = [mouse.x / viewportWidth, mouse.y / viewportHeight]
-        return m
-      },
-
+      iMouse: ({ viewportWidth, viewportHeight }) => [
+        mouse.x / viewportWidth,
+        mouse.y / viewportHeight,
+      ],
       iGlobalTime: regl.prop('iGlobalTime'),
     },
 
     count: 3,
   })
 
-  regl.frame(() => {
-    toy()
+  createLoadCamera(regl)
+  frame(() => {
+    const background = camera.isWebcamLoaded
+      ? camera.webcam.subimage(camera.video)
+      : regl.texture(img)
+
+    toy({
+      background,
+    })
   })
 }
