@@ -1,31 +1,31 @@
-import imageAsset from "../img/test.png";
-import { redShift, invert, modShift } from "./effect-glsl";
-import createRegl from "regl";
+import imageAsset from './assets/test.png'
+import { redShift, invert, modShift } from './effect-glsl'
+import createRegl from 'regl'
 
-const regl = createRegl();
+const regl = createRegl()
 
 const mouse = {
   x: 0,
-  y: 0
-};
+  y: 0,
+}
 
-window.addEventListener("mousemove", event => {
-  mouse.x = event.clientX;
-  mouse.y = event.clientY;
-});
+window.addEventListener('mousemove', event => {
+  mouse.x = event.clientX
+  mouse.y = event.clientY
+})
 
-var img = new Image();
-var loadImageBuffer = () => {
-  initRegl();
-};
+const img = new Image()
+const loadImageBuffer = () => {
+  initRegl()
+}
 
-var init = () => {
-  img.src = imageAsset;
-  img.onload = loadImageBuffer;
-  img.onerror = console.log;
-};
+const init = () => {
+  img.src = imageAsset
+  img.onload = loadImageBuffer
+  img.onerror = console.log
+}
 
-init();
+init()
 
 function initRegl() {
   const toy = regl({
@@ -62,27 +62,27 @@ function initRegl() {
       }`,
 
     attributes: {
-      position: [-2, 0, 0, -2, 2, 2]
+      position: [-2, 0, 0, -2, 2, 2],
     },
 
     uniforms: {
       texture: regl.texture(img),
       iResolution: ({ viewportWidth, viewportHeight }) => [
         viewportWidth,
-        viewportHeight
+        viewportHeight,
       ],
       iMouse: ({ viewportWidth, viewportHeight }) => {
-        const m = [mouse.x / viewportWidth, mouse.y / viewportHeight];
-        return m;
+        const m = [mouse.x / viewportWidth, mouse.y / viewportHeight]
+        return m
       },
 
-      iGlobalTime: regl.prop("iGlobalTime")
+      iGlobalTime: regl.prop('iGlobalTime'),
     },
 
-    count: 3
-  });
+    count: 3,
+  })
 
   regl.frame(() => {
-    toy();
-  });
+    toy()
+  })
 }

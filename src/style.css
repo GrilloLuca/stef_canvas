@@ -1,0 +1,18 @@
+html {
+  background-color: #fefefe;
+}
+
+h1,
+p {
+  margin: 1rem 1rem;
+  font-family: 'Roboto', sans-serif;
+}
+
+body {
+  background-color: black;
+  margin: 0;
+}
+
+canvas {
+  width: 100%;
+}
