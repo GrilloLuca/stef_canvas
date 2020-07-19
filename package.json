@@ -19,7 +19,7 @@
   "homepage": "https://github.com/GrilloLuca/stef_canvas#readme",
   "dependencies": {
     "img": "^3.0.3",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.19",
     "parcel-bundler": "^1.12.4"
   }
 }
